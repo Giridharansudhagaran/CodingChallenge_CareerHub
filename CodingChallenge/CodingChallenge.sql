@@ -80,7 +80,7 @@ VALUES
 
 ---Tasks:
 
----1. Provide a SQL script that initializes the database for the Job Board scenario “CareerHub”. 
+---1. Provide a SQL script that initializes the database for the Job Board scenario â€œCareerHubâ€. 
 ---2. Create tables for Companies, Jobs, Applicants and Applications. 
 ---3. Define appropriate primary keys, foreign keys, and constraints. 
 ---4. Ensure the script handles potential errors, such as if the database or tables already exist.
@@ -119,9 +119,12 @@ WHERE a.ApplicantID = @ApplicantID
 ---job listings in the "Jobs" table. Ensure that the query filters out jobs with a salary of zero.
 SELECT AVG(Salary) AS AverageSalary
 FROM Jobs
-WHERE Salary > 0---9. Write an SQL query to identify the company that has posted the most job listings. Display the 
+WHERE Salary > 0
+
+---9. Write an SQL query to identify the company that has posted the most job listings. Display the 
 ---company name along with the count of job listings they have posted. Handle ties if multiple 
----companies have the same maximum count.SELECT c.CompanyName, COUNT(*) AS JobCount
+---companies have the same maximum count.
+SELECT c.CompanyName, COUNT(*) AS JobCount
 FROM Companies c
 JOIN Jobs j ON c.CompanyID = j.CompanyID
 GROUP BY c.CompanyName
@@ -152,28 +155,52 @@ WHERE Salary BETWEEN 60000 AND 80000;
 SELECT j.JobID, j.JobTitle,a.ApplicationId
 FROM Jobs j
 LEFT JOIN Applications a ON j.JobID = a.JobID
-WHERE a.JobID IS NULL---13. Retrieve a list of job applicants along with the companies they have applied to and the positions 
----they have applied for.SELECT a.FirstName, a.LastName, c.CompanyName, j.JobTitle
+WHERE a.JobID IS NULL
+
+---13. Retrieve a list of job applicants along with the companies they have applied to and the positions 
+---they have applied for.
+SELECT a.FirstName, a.LastName, c.CompanyName, j.JobTitle
 FROM Applicants a
 LEFT JOIN Applications app ON a.ApplicantID = app.ApplicantID
 LEFT JOIN Jobs j ON app.JobID = j.JobID
-LEFT JOIN Companies c ON j.CompanyID = c.CompanyID---14. Retrieve a list of companies along with the count of jobs they have posted, even if they have not 
----received any applications.SELECT c.CompanyName, COUNT(j.JobID) AS JobCount
+LEFT JOIN Companies c ON j.CompanyID = c.CompanyID
+
+---14. Retrieve a list of companies along with the count of jobs they have posted, even if they have not 
+---received any applications.
+SELECT c.CompanyName, COUNT(j.JobID) AS JobCount
 FROM Companies c
 LEFT JOIN Jobs j ON c.CompanyID = j.CompanyID
-GROUP BY c.CompanyName---15. List all applicants along with the companies and positions they have applied for, including those 
----who have not applied.SELECT a.FirstName, a.LastName, c.CompanyName, j.JobTitle
+GROUP BY c.CompanyName
+
+---15. List all applicants along with the companies and positions they have applied for, including those 
+---who have not applied.
+SELECT a.FirstName, a.LastName, c.CompanyName, j.JobTitle
 FROM Applicants a
 CROSS JOIN Companies c
 LEFT JOIN Applications app ON a.ApplicantID = app.ApplicantID
-LEFT JOIN Jobs j ON app.JobID = j.JobID AND j.CompanyID = c.CompanyID---16. Find companies that have posted jobs with a salary higher than the average salary of all jobs.SELECT DISTINCT c.CompanyName
+LEFT JOIN Jobs j ON app.JobID = j.JobID AND j.CompanyID = c.CompanyID
+
+---16. Find companies that have posted jobs with a salary higher than the average salary of all jobs.
+SELECT DISTINCT c.CompanyName
 FROM Companies c
 JOIN Jobs j ON c.CompanyID = j.CompanyID
-WHERE j.Salary > (SELECT AVG(Salary) FROM Jobs)---17. Display a list of applicants with their names and a concatenated string of their city and state.
-ALTER TABLE Applicants ADD State varchar(50)UPDATE Applicants SET State = 'Vellore' where ApplicantID = 1UPDATE Applicants SET State = 'Mudaliarpet' where ApplicantID = 2SELECT * FROM ApplicantsSELECT CONCAT(FirstName, ' ', LastName) AS ApplicantName, CONCAT_WS(' ',State, City) AS Location
-FROM Applicants---18. Retrieve a list of jobs with titles containing either 'Developer' or 'Engineer'.SELECT * FROM Jobs
-WHERE JobTitle LIKE '%Developer%' OR JobTitle LIKE '%Engineer%'---19. Retrieve a list of applicants and the jobs they have applied for, including those who have not 
----applied and jobs without applicants.SELECT a.FirstName, a.LastName, j.JobTitle, c.CompanyName
+WHERE j.Salary > (SELECT AVG(Salary) FROM Jobs)
+
+---17. Display a list of applicants with their names and a concatenated string of their city and state.
+ALTER TABLE Applicants ADD State varchar(50)
+UPDATE Applicants SET State = 'Vellore' where ApplicantID = 1
+UPDATE Applicants SET State = 'Mudaliarpet' where ApplicantID = 2
+SELECT * FROM Applicants
+SELECT CONCAT(FirstName, ' ', LastName) AS ApplicantName, CONCAT_WS(' ',State, City) AS Location
+FROM Applicants
+
+---18. Retrieve a list of jobs with titles containing either 'Developer' or 'Engineer'.
+SELECT * FROM Jobs
+WHERE JobTitle LIKE '%Developer%' OR JobTitle LIKE '%Engineer%'
+
+---19. Retrieve a list of applicants and the jobs they have applied for, including those who have not 
+---applied and jobs without applicants.
+SELECT a.FirstName, a.LastName, j.JobTitle, c.CompanyName
 FROM Applicants a
 CROSS JOIN Jobs j
 LEFT JOIN Applications app ON a.ApplicantID = app.ApplicantID AND j.JobID = app.JobID
